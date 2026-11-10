@@ -135,7 +135,7 @@ def urban_explore_prompt(place: str = "La Rochelle", area_km2: float = 1.0) -> s
         "1. Call get_bbox_area with the place centroid (lat, lon) and bbox_area.\n"
         "2. Use the returned bbox with fetch_buildings, fetch_dem, fetch_lcz, "
         "fetch_cadastre, fetch_roads, and fetch_water as needed.\n"
-        "3. Prefer as_html=true, or pymdu_building_to_image / pymdu_lcz_to_image, "
+        "3. Prefer as_html=true, or pymdurs_building_to_image / pymdurs_lcz_to_image, "
         "for a map preview.\n"
         "4. Default CRS for outputs is EPSG:2154; bbox inputs remain WGS84."
     )

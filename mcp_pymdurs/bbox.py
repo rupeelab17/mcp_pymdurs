@@ -9,7 +9,7 @@ def get_bbox_area(lat: float, lon: float, bbox_area: float) -> list[float]:
     """Return a square bbox `[min_lon, min_lat, max_lon, max_lat]` of given area (km²).
 
     Centered on ``(lat, lon)`` in decimal degrees. ``bbox_area`` is interpreted as
-    the side length in km of a square (same convention as mcp_pymdu).
+    the side length in km of a square (same convention as mcp_pymdurs).
     """
     earth_radius_km = 6371.0
     half_side = bbox_area / 2.0

@@ -199,17 +199,15 @@ def register_tools(app: Robyn) -> None:
             epsg=req.epsg,
             output_path=req.output_path,
         )
-
-    # mcp_pymdu-compatible aliases (always Plotly HTML)
+    # Plotly HTML helpers (always as_html)
     @app.mcp.tool(
-        name="pymdu_building_to_image",
+        name="pymdurs_building_to_image",
         description=(
-            "Fetch IGN buildings and return an interactive Plotly HTML map "
-            "(mcp_pymdu pymdu_building_to_image compatible)."
+            "Fetch IGN buildings via pymdurs and return an interactive Plotly HTML map."
         ),
         input_schema=mcp_input_schema(GeometricFetchRequest),
     )
-    async def pymdu_building_to_image(
+    async def pymdurs_building_to_image(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -230,14 +228,13 @@ def register_tools(app: Robyn) -> None:
         )
 
     @app.mcp.tool(
-        name="pymdu_lcz_to_image",
+        name="pymdurs_lcz_to_image",
         description=(
-            "Fetch Local Climate Zones and return an interactive Plotly HTML map "
-            "(mcp_pymdu pymdu_lcz_to_image compatible)."
+            "Fetch Local Climate Zones via pymdurs and return an interactive Plotly HTML map."
         ),
         input_schema=mcp_input_schema(LczImageRequest),
     )
-    async def pymdu_lcz_to_image(
+    async def pymdurs_lcz_to_image(
         bbox: list | None = None,
         city: str | None = None,
         epsg: int | None = None,
@@ -260,3 +257,4 @@ def register_tools(app: Robyn) -> None:
             output_path=req.output_path,
             as_html=True,
         )
+

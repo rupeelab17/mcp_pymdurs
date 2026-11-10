@@ -44,7 +44,7 @@ class BBoxAreaRequest(BaseModel):
     lon: float = Field(description="Longitude (degrees)")
     bbox_area: float = Field(
         gt=0,
-        description="Square side length in km (mcp_pymdu convention)",
+        description="Square side length in km (mcp_pymdurs convention)",
     )
 
 
@@ -87,7 +87,7 @@ class LczFetchRequest(GeometricFetchRequest):
 
 
 class LczImageRequest(GeometricFetchRequest):
-    """mcp_pymdu ``pymdu_lcz_to_image`` — always returns Plotly HTML."""
+    """``pymdurs_lcz_to_image`` — always returns Plotly HTML."""
 
     city: str = Field(
         default="la-rochelle",
