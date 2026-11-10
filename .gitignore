@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[oc]
+*.egg-info/
+build/
+dist/
+wheels/
+
+# Virtual environments
+.venv/
+
+# uv / Python pin (local)
+.python-version
+
+# Geospatial / runtime outputs
+output/
+*.tif
+*.tiff
+*.laz
+*.las
+*.gpkg
+*.shp
+*.shx
+*.dbf
+*.prj
+
+# Env / secrets
+.env
+.env.*
+
+# Caches / IDE
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.DS_Store
+.idea/
+.vscode/

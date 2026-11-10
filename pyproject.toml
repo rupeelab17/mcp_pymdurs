@@ -1,0 +1,28 @@
+[project]
+name = "mcp-pymdurs"
+version = "0.1.0"
+description = "MCP server for pymdurs (Robyn HTTP JSON-RPC on /mcp)"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+authors = [
+    { name = "Boris Brangeon", email = "boris.brangeon@plateforme-tipee.com" }
+]
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "geopandas>=1.0",
+    "httpx>=0.28",
+    "plotly>=6.0",
+    "pymdurs>=0.1.19",
+    "robyn[pydantic]>=0.88.0",
+]
+
+[project.scripts]
+mcp-pymdurs = "mcp_pymdurs.__main__:main"
+
+[build-system]
+requires = ["uv_build>=0.10.5,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+module-name = "mcp_pymdurs"
