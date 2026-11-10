@@ -66,7 +66,16 @@ def _height_column(gdf: Any) -> str | None:
     return None
 
 
-def fetch_buildings(
+def _geojson_to_gdf(geojson_data: Any, epsg: int) -> Any:
+    """Build a GeoDataFrame from pymdurs get_geojson()/geojson() output."""
+    import geopandas as gpd
+
+    if isinstance(geojson_data, str):
+        geojson_data = json.loads(geojson_data)
+    return gpd.GeoDataFrame.from_features(geojson_data, crs=f"EPSG:{epsg}")
+
+
+async def fetch_buildings(
     bbox: list[float] | None = None,
     epsg: int = DEFAULT_EPSG,
     output_path: str = DEFAULT_OUTPUT_PATH,
@@ -82,20 +91,24 @@ def fetch_buildings(
     buildings.set_crs(epsg)
     buildings = buildings.run()
 
-    if as_html:
-        gdf = buildings.to_pandas()
-        column = _height_column(gdf)
-        return gdf_to_plotly_html(gdf, column=column, labels={column: "Hauteur"} if column else None)
-
+    # to_pandas() is attribute-only (no geometry/crs); plot via get_geojson()
     geojson = buildings.get_geojson() if hasattr(buildings, "get_geojson") else None
     if not geojson:
         geojson = _pandas_to_geojson_text(buildings.to_pandas())
+
+    if as_html:
+        gdf = _geojson_to_gdf(geojson, epsg)
+        column = _height_column(gdf)
+        return gdf_to_plotly_html(
+            gdf, column=column, labels={column: "Hauteur"} if column else None
+        )
+
     summary = _geojson_summary(geojson if isinstance(geojson, str) else json.dumps(geojson))
     summary.update({"bbox": resolved, "epsg": epsg, "output_path": out, "layer": "buildings"})
     return json.dumps(summary, ensure_ascii=False)
 
 
-def fetch_dem(
+async def fetch_dem(
     bbox: list[float] | None = None,
     epsg: int = DEFAULT_EPSG,
     output_path: str = DEFAULT_OUTPUT_PATH,
@@ -125,7 +138,7 @@ def fetch_dem(
     )
 
 
-def fetch_lcz(
+async def fetch_lcz(
     bbox: list[float] | None = None,
     city: str = "la-rochelle",
     epsg: int = DEFAULT_EPSG,
@@ -137,7 +150,7 @@ def fetch_lcz(
 
     resolved = normalize_bbox(bbox, DEFAULT_BBOX)
     out = _ensure_output(output_path)
-    zipfile_url = search_url_lcz(city=city)
+    zipfile_url = await search_url_lcz(city=city)
 
     lcz = pymdurs.geometric.Lcz(output_path=out)
     lcz.set_bbox(*_bbox_tuple(resolved))
@@ -152,7 +165,7 @@ def fetch_lcz(
         import geopandas as gpd
 
         gdf = (
-            gpd.GeoDataFrame.from_features(geojson_data, crs=f"EPSG:{epsg}")
+            _geojson_to_gdf(geojson_data, epsg)
             if geojson_data
             else gpd.read_file(lcz_path)
         )
@@ -194,7 +207,7 @@ def fetch_lcz(
     return json.dumps(summary, ensure_ascii=False)
 
 
-def _fetch_vector_layer(
+async def _fetch_vector_layer(
     layer_name: str,
     collector_factory: Any,
     bbox: list[float] | None,
@@ -233,7 +246,7 @@ def _fetch_vector_layer(
     return json.dumps(summary, ensure_ascii=False)
 
 
-def fetch_cadastre(
+async def fetch_cadastre(
     bbox: list[float] | None = None,
     epsg: int = DEFAULT_EPSG,
     output_path: str = DEFAULT_OUTPUT_PATH,
@@ -241,7 +254,7 @@ def fetch_cadastre(
     """Fetch cadastre parcels for a WGS84 bbox."""
     import pymdurs
 
-    return _fetch_vector_layer(
+    return await _fetch_vector_layer(
         "cadastre",
         pymdurs.geometric.Cadastre,
         bbox,
@@ -250,7 +263,7 @@ def fetch_cadastre(
     )
 
 
-def fetch_roads(
+async def fetch_roads(
     bbox: list[float] | None = None,
     epsg: int = DEFAULT_EPSG,
     output_path: str = DEFAULT_OUTPUT_PATH,
@@ -258,7 +271,7 @@ def fetch_roads(
     """Fetch IGN roads for a WGS84 bbox."""
     import pymdurs
 
-    return _fetch_vector_layer(
+    return await _fetch_vector_layer(
         "roads",
         pymdurs.geometric.Road,
         bbox,
@@ -267,7 +280,7 @@ def fetch_roads(
     )
 
 
-def fetch_water(
+async def fetch_water(
     bbox: list[float] | None = None,
     epsg: int = DEFAULT_EPSG,
     output_path: str = DEFAULT_OUTPUT_PATH,
@@ -275,7 +288,7 @@ def fetch_water(
     """Fetch IGN water bodies for a WGS84 bbox."""
     import pymdurs
 
-    return _fetch_vector_layer(
+    return await _fetch_vector_layer(
         "water",
         pymdurs.geometric.Water,
         bbox,

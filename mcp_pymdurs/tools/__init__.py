@@ -34,7 +34,7 @@ def register_tools(app: Robyn) -> None:
         ),
         input_schema=mcp_input_schema(BBoxAreaRequest),
     )
-    def get_bbox_area(lat: float, lon: float, bbox_area: float) -> list:
+    async def get_bbox_area(lat: float, lon: float, bbox_area: float) -> list:
         req = _parse(BBoxAreaRequest, lat=lat, lon=lon, bbox_area=bbox_area)
         return compute_bbox_area(lat=req.lat, lon=req.lon, bbox_area=req.bbox_area)
 
@@ -46,7 +46,7 @@ def register_tools(app: Robyn) -> None:
         ),
         input_schema=mcp_input_schema(BuildingsFetchRequest),
     )
-    def fetch_buildings(
+    async def fetch_buildings(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -62,7 +62,7 @@ def register_tools(app: Robyn) -> None:
         if as_html is not None:
             payload["as_html"] = as_html
         req = BuildingsFetchRequest.model_validate(payload)
-        return geometric.fetch_buildings(
+        return await geometric.fetch_buildings(
             bbox=req.bbox,
             epsg=req.epsg,
             output_path=req.output_path,
@@ -74,7 +74,7 @@ def register_tools(app: Robyn) -> None:
         description="Fetch DEM (MNT) via pymdurs; returns JSON with TIFF/mask paths.",
         input_schema=mcp_input_schema(GeometricFetchRequest),
     )
-    def fetch_dem(
+    async def fetch_dem(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -87,7 +87,7 @@ def register_tools(app: Robyn) -> None:
         if output_path is not None:
             payload["output_path"] = output_path
         req = GeometricFetchRequest.model_validate(payload)
-        return geometric.fetch_dem(
+        return await geometric.fetch_dem(
             bbox=req.bbox,
             epsg=req.epsg,
             output_path=req.output_path,
@@ -101,7 +101,7 @@ def register_tools(app: Robyn) -> None:
         ),
         input_schema=mcp_input_schema(LczFetchRequest),
     )
-    def fetch_lcz(
+    async def fetch_lcz(
         bbox: list | None = None,
         city: str | None = None,
         epsg: int | None = None,
@@ -120,7 +120,7 @@ def register_tools(app: Robyn) -> None:
         if as_html is not None:
             payload["as_html"] = as_html
         req = LczFetchRequest.model_validate(payload)
-        return geometric.fetch_lcz(
+        return await geometric.fetch_lcz(
             bbox=req.bbox,
             city=req.city,
             epsg=req.epsg,
@@ -133,7 +133,7 @@ def register_tools(app: Robyn) -> None:
         description="Fetch cadastre parcels via pymdurs; returns JSON summary with geojson.",
         input_schema=mcp_input_schema(GeometricFetchRequest),
     )
-    def fetch_cadastre(
+    async def fetch_cadastre(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -146,7 +146,7 @@ def register_tools(app: Robyn) -> None:
         if output_path is not None:
             payload["output_path"] = output_path
         req = GeometricFetchRequest.model_validate(payload)
-        return geometric.fetch_cadastre(
+        return await geometric.fetch_cadastre(
             bbox=req.bbox,
             epsg=req.epsg,
             output_path=req.output_path,
@@ -157,7 +157,7 @@ def register_tools(app: Robyn) -> None:
         description="Fetch IGN roads via pymdurs; returns JSON summary with geojson.",
         input_schema=mcp_input_schema(GeometricFetchRequest),
     )
-    def fetch_roads(
+    async def fetch_roads(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -170,7 +170,7 @@ def register_tools(app: Robyn) -> None:
         if output_path is not None:
             payload["output_path"] = output_path
         req = GeometricFetchRequest.model_validate(payload)
-        return geometric.fetch_roads(
+        return await geometric.fetch_roads(
             bbox=req.bbox,
             epsg=req.epsg,
             output_path=req.output_path,
@@ -181,7 +181,7 @@ def register_tools(app: Robyn) -> None:
         description="Fetch IGN water bodies via pymdurs; returns JSON summary with geojson.",
         input_schema=mcp_input_schema(GeometricFetchRequest),
     )
-    def fetch_water(
+    async def fetch_water(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -194,7 +194,7 @@ def register_tools(app: Robyn) -> None:
         if output_path is not None:
             payload["output_path"] = output_path
         req = GeometricFetchRequest.model_validate(payload)
-        return geometric.fetch_water(
+        return await geometric.fetch_water(
             bbox=req.bbox,
             epsg=req.epsg,
             output_path=req.output_path,
@@ -209,7 +209,7 @@ def register_tools(app: Robyn) -> None:
         ),
         input_schema=mcp_input_schema(GeometricFetchRequest),
     )
-    def pymdu_building_to_image(
+    async def pymdu_building_to_image(
         bbox: list | None = None,
         epsg: int | None = None,
         output_path: str | None = None,
@@ -222,7 +222,7 @@ def register_tools(app: Robyn) -> None:
         if output_path is not None:
             payload["output_path"] = output_path
         req = GeometricFetchRequest.model_validate(payload)
-        return geometric.fetch_buildings(
+        return await geometric.fetch_buildings(
             bbox=req.bbox,
             epsg=req.epsg,
             output_path=req.output_path,
@@ -237,7 +237,7 @@ def register_tools(app: Robyn) -> None:
         ),
         input_schema=mcp_input_schema(LczImageRequest),
     )
-    def pymdu_lcz_to_image(
+    async def pymdu_lcz_to_image(
         bbox: list | None = None,
         city: str | None = None,
         epsg: int | None = None,
@@ -253,7 +253,7 @@ def register_tools(app: Robyn) -> None:
         if output_path is not None:
             payload["output_path"] = output_path
         req = LczImageRequest.model_validate(payload)
-        return geometric.fetch_lcz(
+        return await geometric.fetch_lcz(
             bbox=req.bbox,
             city=req.city,
             epsg=req.epsg,

@@ -37,7 +37,7 @@ def defaults() -> DefaultsInfo:
 
 
 @app.post("/api/bbox")
-def api_bbox(body: BBoxAreaRequest) -> BBoxAreaResponse:
+async def api_bbox(body: BBoxAreaRequest) -> BBoxAreaResponse:
     """Compute a square WGS84 bbox (Pydantic-validated body)."""
     return BBoxAreaResponse(
         bbox=compute_bbox_area(lat=body.lat, lon=body.lon, bbox_area=body.bbox_area)
@@ -45,8 +45,8 @@ def api_bbox(body: BBoxAreaRequest) -> BBoxAreaResponse:
 
 
 @app.post("/api/buildings")
-def api_buildings(body: BuildingsFetchRequest) -> dict:
-    result = geometric.fetch_buildings(
+async def api_buildings(body: BuildingsFetchRequest) -> dict:
+    result = await geometric.fetch_buildings(
         bbox=body.bbox,
         epsg=body.epsg,
         output_path=body.output_path,
@@ -58,9 +58,9 @@ def api_buildings(body: BuildingsFetchRequest) -> dict:
 
 
 @app.post("/api/dem")
-def api_dem(body: GeometricFetchRequest) -> dict:
+async def api_dem(body: GeometricFetchRequest) -> dict:
     return json.loads(
-        geometric.fetch_dem(
+        await geometric.fetch_dem(
             bbox=body.bbox,
             epsg=body.epsg,
             output_path=body.output_path,
@@ -69,8 +69,8 @@ def api_dem(body: GeometricFetchRequest) -> dict:
 
 
 @app.post("/api/lcz")
-def api_lcz(body: LczFetchRequest) -> dict:
-    result = geometric.fetch_lcz(
+async def api_lcz(body: LczFetchRequest) -> dict:
+    result = await geometric.fetch_lcz(
         bbox=body.bbox,
         city=body.city,
         epsg=body.epsg,
@@ -83,9 +83,9 @@ def api_lcz(body: LczFetchRequest) -> dict:
 
 
 @app.post("/api/cadastre")
-def api_cadastre(body: GeometricFetchRequest) -> dict:
+async def api_cadastre(body: GeometricFetchRequest) -> dict:
     return json.loads(
-        geometric.fetch_cadastre(
+        await geometric.fetch_cadastre(
             bbox=body.bbox,
             epsg=body.epsg,
             output_path=body.output_path,
@@ -94,9 +94,9 @@ def api_cadastre(body: GeometricFetchRequest) -> dict:
 
 
 @app.post("/api/roads")
-def api_roads(body: GeometricFetchRequest) -> dict:
+async def api_roads(body: GeometricFetchRequest) -> dict:
     return json.loads(
-        geometric.fetch_roads(
+        await geometric.fetch_roads(
             bbox=body.bbox,
             epsg=body.epsg,
             output_path=body.output_path,
@@ -105,9 +105,9 @@ def api_roads(body: GeometricFetchRequest) -> dict:
 
 
 @app.post("/api/water")
-def api_water(body: GeometricFetchRequest) -> dict:
+async def api_water(body: GeometricFetchRequest) -> dict:
     return json.loads(
-        geometric.fetch_water(
+        await geometric.fetch_water(
             bbox=body.bbox,
             epsg=body.epsg,
             output_path=body.output_path,

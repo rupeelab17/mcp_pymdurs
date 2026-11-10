@@ -9,7 +9,7 @@ LCZ_DATASET_RESOURCES = (
 )
 
 
-def search_url_lcz(city: str) -> str:
+async def search_url_lcz(city: str) -> str:
     """Return the first LCZ zip resource URL matching ``city`` on data.gouv.fr."""
     params = {
         "type": "main",
@@ -22,8 +22,10 @@ def search_url_lcz(city: str) -> str:
         "content-type": "application/json",
         "User-Agent": "mcp-pymdurs/0.1 (+https://github.com/rupeelab17/pymdurs)",
     }
-    with httpx.Client(follow_redirects=True, timeout=30.0) as client:
-        response = client.get(LCZ_DATASET_RESOURCES, params=params, headers=headers)
+    async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
+        response = await client.get(
+            LCZ_DATASET_RESOURCES, params=params, headers=headers
+        )
         response.raise_for_status()
         payload = response.json()
 
